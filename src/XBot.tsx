@@ -5,25 +5,101 @@ Command: npx gltfjsx@6.2.16 ./public/XBot.glb
 
 import React, { useEffect, useRef } from 'react'
 import { useAnimations, useFBX, useGLTF } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber';
+import { useControls } from 'leva';
+import * as THREE from 'three';
 
-export default function XBot(props: any) {
+interface XBotProps {
+  animation: string;
+}
+
+export default function XBot(props: XBotProps) {
+
+  const { animation }: XBotProps = props;
+
+  // 从GLTF文件加载模型和材质
   const group = useRef()
   const { nodes, materials } = useGLTF('/XBot.glb')
-  // const PrayingAnimation = useLoader(FBXLoader, '/Praying.fbx');
+
+  // 从FBX文件加载动画
+  const { animations: TypingAnimation } = useFBX('/Typing.fbx');
   const { animations: PrayingAnimation } = useFBX('/Praying.fbx');
-  console.log(PrayingAnimation);
+  const { animations: FallAnimation } = useFBX('/Fall.fbx');
+  const { animations: StandingAnimation } = useFBX('/Standing.fbx'); // 应该是不同的FBX文件
+
+
+  // 使用useEffect来加载动画，并将它们分配给相应的动作变量。
+  console.log(PrayingAnimation, FallAnimation);
   PrayingAnimation[0].name = "Praying";
-  const { actions } = useAnimations(PrayingAnimation, group);
+  FallAnimation[0].name = "FallAnimation";
+  StandingAnimation[0].name = "Standing";
+  TypingAnimation[0].name = "Typing";
+
+
+  // 将动画分配给 ref，以便 drei 的 useAnimations hook 可以访问它们。
+  const { actions } = useAnimations([TypingAnimation[0], PrayingAnimation[0], FallAnimation[0], StandingAnimation[0]], group);
+  // 设置人物是否跟随光标，并根据用户的偏好进行动画切换。
+  const { headFollow, cursorFollow, wireframe } = useControls({
+    headFollow: false,
+    cursorFollow: false,
+    wireframe: false,
+  });
+  // useFrame hook 用于动画。它每一帧被调用，并允许我们操作场景对象的属性。
+  // 让头部对准光标或镜头的方法定义
+  useFrame((state) => {
+    // 确保 headFollow 是 true
+    if (headFollow && group.current) {
+      // 使用可选链（optional chaining）确保不会在 undefined 上调用 lookAt
+      const neck = group.current.getObjectByName('mixamorigNeck');
+      if (neck) {
+        neck.lookAt(state.camera.position);
+      } else {
+        console.error('没有找到名为 mixamorigNeck 的对象');
+      }
+    }
+    // 确保 headFollow 是 true
+    if (cursorFollow && group.current) {
+      // 使用可选链（optional chaining）确保不会在 undefined 上调用 lookAt
+      const neck = group.current.getObjectByName('mixamorigSpine');
+      const target = new THREE.Vector3(state.pointer.x, state.pointer.y, 0);
+      if (neck) {
+        neck.lookAt(target);
+      } else {
+        console.error('没有找到名为 mixamorigSpine 的对象');
+      }
+    }
+  });
+
+  // 在组件挂载时播放动作 'Praying'，并在组件卸载时重置并停止它。
   useEffect(() => {
-    actions['Praying']?.reset().play();
+    actions[animation]?.reset().play();
   }, [actions]);
 
+  // 在组件挂载时遍历所有子物体并打印出它们的名称。
+  useEffect(() => {
+    if (group.current) {
+      group.current.traverse((object) => {
+        console.log(object.name); // 打印出所有物体的名称
+      });
+    }
+  }, [group.current]);
+
+
+  // 切换材质
+  useEffect(() => {
+    Object.values(materials).forEach((material) => {
+      material.wireframe = wireframe;
+    });
+  }, [wireframe, materials]);
+
   return (
-    <group ref={group} {...props} dispose={null}>
-      <group rotation={[Math.PI / 2, Math.PI, Math.PI]} scale={0.01}>
-        <primitive object={nodes.mixamorigHips} />
-        <skinnedMesh geometry={nodes.Beta_Joints.geometry} material={materials.Beta_Joints_MAT1} skeleton={nodes.Beta_Joints.skeleton} />
-        <skinnedMesh geometry={nodes.Beta_Surface.geometry} material={materials.Beta_HighLimbsGeoSG3} skeleton={nodes.Beta_Surface.skeleton} />
+    <group rotation={[0, 0, 0]} >
+      <group ref={group}{...props} dispose={null}>
+        <group rotation={[0, 0, 0]} scale={0.01}>
+          <primitive object={nodes.mixamorigHips} />
+          <skinnedMesh geometry={nodes.Beta_Joints.geometry} material={materials.Beta_Joints_MAT1} skeleton={nodes.Beta_Joints.skeleton} />
+          <skinnedMesh geometry={nodes.Beta_Surface.geometry} material={materials.Beta_HighLimbsGeoSG3} skeleton={nodes.Beta_Surface.skeleton} />
+        </group>
       </group>
     </group>
   )
