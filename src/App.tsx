@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber'
 import { ContactShadows, OrbitControls } from '@react-three/drei'
 import XBot from './XBot'
 import { useControls } from 'leva'
+import RoomScene from './RoomScene'
 
 function App() {
   // 创建一个控制面板来选择不同的动画
@@ -27,7 +28,7 @@ function App() {
         {/* 环境 */}
         {/* 背景色 */}
         <color attach={'background'} args={['#ececec']} />
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={1} />
         <OrbitControls />
         <ContactShadows
           opacity={0.42}
@@ -38,16 +39,17 @@ function App() {
           color={'#000000'}
         />
 
+        <RoomScene />
         <XBot animation={animation} />
 
         {/* 这是一个平面 */}
-        <mesh position={[0, 0, 0]} rotation={[-Math.PI * 0.5, 0, 0]} receiveShadow>
+        {/* <mesh position={[0, 0, 0]} rotation={[-Math.PI * 0.5, 0, 0]} receiveShadow>
           <planeGeometry
             attach={'geometry'}
             args={[3, 3, 3]}
           />
           <meshStandardMaterial attach={'material'} color={'white'} />
-        </mesh>
+        </mesh> */}
 
         {/* 只有特定条件渲染的内容 */}
         {animation === 'Typing' && (

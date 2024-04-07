@@ -8,9 +8,25 @@ import { useAnimations, useFBX, useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber';
 import { useControls } from 'leva';
 import * as THREE from 'three';
+import { MeshBasicMaterial } from 'three';
+import { GroupProps } from '@react-three/fiber';
+import { GLTF } from 'three';
+import { Mesh } from 'three';
+
+
+
 
 interface XBotProps {
   animation: string;
+}
+// 定义GLTFResult接口，根据你的GLTF结构进行调整
+interface GLTFResult extends GLTF {
+  nodes: {
+    [name: string]: Mesh;
+  },
+  materials: {
+    [name: string]: THREE.Material
+  };
 }
 
 export default function XBot(props: XBotProps) {
@@ -18,14 +34,14 @@ export default function XBot(props: XBotProps) {
   const { animation }: XBotProps = props;
 
   // 从GLTF文件加载模型和材质
-  const group = useRef()
-  const { nodes, materials } = useGLTF('/XBot.glb')
+  const xBot = useRef<GroupProps>()
+  const { nodes, materials } = useGLTF('/models/XBot.glb') as unknown as GLTFResult;
 
   // 从FBX文件加载动画
-  const { animations: TypingAnimation } = useFBX('/Typing.fbx');
-  const { animations: PrayingAnimation } = useFBX('/Praying.fbx');
-  const { animations: FallAnimation } = useFBX('/Fall.fbx');
-  const { animations: StandingAnimation } = useFBX('/Standing.fbx'); // 应该是不同的FBX文件
+  const { animations: TypingAnimation } = useFBX('/animations/Typing.fbx');
+  const { animations: PrayingAnimation } = useFBX('/animations/Praying.fbx');
+  const { animations: FallAnimation } = useFBX('/animations/Fall.fbx');
+  const { animations: StandingAnimation } = useFBX('/animations/Standing.fbx'); // 应该是不同的FBX文件
 
 
   // 使用useEffect来加载动画，并将它们分配给相应的动作变量。
@@ -48,9 +64,9 @@ export default function XBot(props: XBotProps) {
   // 让头部对准光标或镜头的方法定义
   useFrame((state) => {
     // 确保 headFollow 是 true
-    if (headFollow && group.current) {
+    if (headFollow && xBot.current) {
       // 使用可选链（optional chaining）确保不会在 undefined 上调用 lookAt
-      const neck = group.current.getObjectByName('mixamorigNeck');
+      const neck = xBot.current!.getObjectByName('mixamorigNeck')!;
       if (neck) {
         neck.lookAt(state.camera.position);
       } else {
@@ -58,9 +74,9 @@ export default function XBot(props: XBotProps) {
       }
     }
     // 确保 headFollow 是 true
-    if (cursorFollow && group.current) {
+    if (cursorFollow && xBot.current) {
       // 使用可选链（optional chaining）确保不会在 undefined 上调用 lookAt
-      const neck = group.current.getObjectByName('mixamorigSpine');
+      const neck = xBot.current.getObjectByName('mixamorigSpine');
       const target = new THREE.Vector3(state.pointer.x, state.pointer.y, 0);
       if (neck) {
         neck.lookAt(target);
@@ -77,24 +93,26 @@ export default function XBot(props: XBotProps) {
 
   // 在组件挂载时遍历所有子物体并打印出它们的名称。
   useEffect(() => {
-    if (group.current) {
-      group.current.traverse((object) => {
+    if (xBot.current) {
+      xBot.current?.traverse((object) => {
         console.log(object.name); // 打印出所有物体的名称
       });
     }
-  }, [group.current]);
+  }, [xBot.current]);
 
 
   // 切换材质
   useEffect(() => {
     Object.values(materials).forEach((material) => {
-      material.wireframe = wireframe;
+      if (material instanceof MeshBasicMaterial) {
+        material.wireframe = wireframe;
+      }
     });
   }, [wireframe, materials]);
 
   return (
     <group rotation={[0, 0, 0]} >
-      <group ref={group}{...props} dispose={null}>
+      <group ref={xBot}{...props} dispose={null}>
         <group rotation={[0, 0, 0]} scale={0.01}>
           <primitive object={nodes.mixamorigHips} />
           <skinnedMesh geometry={nodes.Beta_Joints.geometry} material={materials.Beta_Joints_MAT1} skeleton={nodes.Beta_Joints.skeleton} />
