@@ -53,7 +53,7 @@ export default function XBot(props: XBotProps) {
 
 
   // 将动画分配给 ref，以便 drei 的 useAnimations hook 可以访问它们。
-  const { actions } = useAnimations([TypingAnimation[0], PrayingAnimation[0], FallAnimation[0], StandingAnimation[0]], group);
+  const { actions } = useAnimations([TypingAnimation[0], PrayingAnimation[0], FallAnimation[0], StandingAnimation[0]], xBot);
   // 设置人物是否跟随光标，并根据用户的偏好进行动画切换。
   const { headFollow, cursorFollow, wireframe } = useControls({
     headFollow: false,

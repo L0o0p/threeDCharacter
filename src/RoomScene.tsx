@@ -21,7 +21,7 @@ interface GLTFResult extends GLTF {
 
 export default function RoomScene(props: GroupProps) {
   // load贴图文件
-  const texture = useTexture('/Baked.png')
+  const texture = useTexture('/scenes/roomScene.png')
   // blender导出的时候默认flipY，可能导致mapping不正确，这里给他反回来
   texture.flipY = false;
   // texture.encoding = THREE.sRGBEncoding;//我也不知道有什么用
@@ -32,10 +32,10 @@ export default function RoomScene(props: GroupProps) {
   // load模型文件
   const {
     nodes,
-    // materials
-  } = useGLTF('/baked.gltf') as unknown as GLTFResult;
+    materials
+  } = useGLTF('/scenes/roomScene.gltf') as unknown as GLTFResult;
   return (
-    <group {...props} dispose={null}>
+    <group {...props} dispose={null} scale={1.15} rotation={[0, Math.PI / 2, 0]}>
       <group name="RootNode" position={[-0.812, 0, 1.105]}>
         <mesh name="Cube" geometry={nodes.Cube.geometry} material={textureMaterial} rotation={[-Math.PI / 2, 0, 0]} />
         <mesh name="Icosphere003" geometry={nodes.Icosphere003.geometry} material={textureMaterial} position={[0.044, 0.696, -0.077]} rotation={[-Math.PI / 2, 0, 0]} />
@@ -47,7 +47,7 @@ export default function RoomScene(props: GroupProps) {
           <mesh name="Cube004-Mesh_1" geometry={nodes['Cube004-Mesh_1'].geometry} material={textureMaterial} />
           <mesh name="Cube004-Mesh_2" geometry={nodes['Cube004-Mesh_2'].geometry} material={textureMaterial} />
         </group>
-        <group name="Cube006" position={[0.426, -0.323, 0.332]}>
+        <group name="Cube006" position={[0.426 +0.55, -0.323, 0.332-0.15]}>
           <mesh name="Cube006-Mesh" geometry={nodes['Cube006-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Cube006-Mesh_1" geometry={nodes['Cube006-Mesh_1'].geometry} material={textureMaterial} />
         </group>
@@ -63,11 +63,11 @@ export default function RoomScene(props: GroupProps) {
           <mesh name="Laptop_Cube010-Mesh_2" geometry={nodes['Laptop_Cube010-Mesh_2'].geometry} material={textureMaterial} />
         </group>
       </group>
-      <mesh name="rubber_duck_toy" geometry={nodes.rubber_duck_toy.geometry} material={textureMaterial} position={[-0.954, 0, -1]} rotation={[-Math.PI, 0.913, -Math.PI]} />
+      <mesh name="rubber_duck_toy001" geometry={nodes.rubber_duck_toy001.geometry} material={textureMaterial} position={[-0.935, -0.005, -1.005]} rotation={[-Math.PI, 0.708, -Math.PI]} />
       <mesh name="Plane-Mesh" geometry={nodes['Plane-Mesh'].geometry} material={textureMaterial} />
       <mesh name="Plane-Mesh_1" geometry={nodes['Plane-Mesh_1'].geometry} material={textureMaterial} />
     </group>
   )
 }
 
-useGLTF.preload('/baked.gltf')
+useGLTF.preload('/scenes/roomScene.gltf')

@@ -28,7 +28,7 @@ function App() {
         {/* 环境 */}
         {/* 背景色 */}
         <color attach={'background'} args={['#ececec']} />
-        <ambientLight intensity={1} />
+        <ambientLight intensity={4} />
         <OrbitControls />
         <ContactShadows
           opacity={0.42}
