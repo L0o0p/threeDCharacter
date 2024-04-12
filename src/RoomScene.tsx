@@ -10,6 +10,8 @@ import * as THREE from 'three'
 import { Mesh } from 'three';
 import { GLTF } from 'three';
 import { GroupProps } from '@react-three/fiber';
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion-3d';
 
 
 // 定义GLTFResult接口，根据你的GLTF结构进行调整
@@ -17,6 +19,7 @@ interface GLTFResult extends GLTF {
   nodes: {
     [name: string]: Mesh;
   };
+  section: boolean;
 }
 
 export default function RoomScene(props: GroupProps) {
@@ -34,38 +37,92 @@ export default function RoomScene(props: GroupProps) {
     nodes,
     materials
   } = useGLTF('/scenes/roomScene.gltf') as unknown as GLTFResult;
+  const { section } = props
+
+  const root = useRef(null)
+
+
+
   return (
-    <group {...props} dispose={null} scale={1.15} rotation={[0, Math.PI / 2, 0]}>
-      <group name="RootNode" position={[-0.812, 0, 1.105]}>
+    <group {...props} ref={root} dispose={null} scale={1.15} rotation={[0, Math.PI / 2, 0]}>
+      <motion.group
+        scale={[0, 0, 0]}
+        animate={{
+          scale: section === 0 ? 1 : 0
+        }}
+        name="RootNode" position={[-0.812, 0, 1.105]}>
         <mesh name="Cube" geometry={nodes.Cube.geometry} material={textureMaterial} rotation={[-Math.PI / 2, 0, 0]} />
         <mesh name="Icosphere003" geometry={nodes.Icosphere003.geometry} material={textureMaterial} position={[0.044, 0.696, -0.077]} rotation={[-Math.PI / 2, 0, 0]} />
-      </group>
+      </motion.group>
       <group name="Empty" position={[-0.977, 0.536, -0.151]}>
         <mesh name="Cube001" geometry={nodes.Cube001.geometry} material={textureMaterial} position={[1.72, -0.536, -0.067]} />
-        <group name="Cube004" position={[0.169, -0.21, 0.042]}>
+        <motion.group
+          scale={[0, 0, 0]}
+          animate={{
+            scale: section === 0 ? 1 : 0
+          }}
+          name="Cube004" position={[0.169, -0.21, 0.042]}>
           <mesh name="Cube004-Mesh" geometry={nodes['Cube004-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Cube004-Mesh_1" geometry={nodes['Cube004-Mesh_1'].geometry} material={textureMaterial} />
           <mesh name="Cube004-Mesh_2" geometry={nodes['Cube004-Mesh_2'].geometry} material={textureMaterial} />
-        </group>
-        <group name="Cube006" position={[0.426 +0.55, -0.323, 0.332-0.15]}>
+        </motion.group>
+        <motion.group
+          scale={[0, 0, 0]}
+          animate={{
+            scale: section === 0 ? 1 : 0
+          }}
+          name="Cube006" position={[0.426 + 0.55, -0.323, 0.332 - 0.15]}>
           <mesh name="Cube006-Mesh" geometry={nodes['Cube006-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Cube006-Mesh_1" geometry={nodes['Cube006-Mesh_1'].geometry} material={textureMaterial} />
-        </group>
-        <group name="Cylinder" position={[0.081, 0.008, 0.202]}>
+        </motion.group>
+        
+        <motion.group
+          scale={[0, 0, 0]}
+          animate={{
+            scale: section === 0 ? 1 : 0
+          }}
+          name="Cylinder" position={[0.081, 0.008, 0.202]}>
           <mesh name="Cylinder-Mesh" geometry={nodes['Cylinder-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Cylinder-Mesh_1" geometry={nodes['Cylinder-Mesh_1'].geometry} material={textureMaterial} />
           <mesh name="Cylinder-Mesh_2" geometry={nodes['Cylinder-Mesh_2'].geometry} material={textureMaterial} />
-        </group>
-        <mesh name="Cylinder001" geometry={nodes.Cylinder001.geometry} material={textureMaterial} position={[-0.158, 0.004, -0.23]} />
-        <group name="Laptop_Cube010" position={[-0.171, 0.067, 0.142]}>
+        </motion.group>
+        {/* 台灯 */}
+        <motion.mesh
+          scale={[0, 0, 0]}
+          animate={{
+            scale: section === 0 ? 1 : 0
+          }}
+          name="Cylinder001" geometry={nodes.Cylinder001.geometry} material={textureMaterial} position={[-0.158, 0.004, -0.23]} />
+        {/* 笔记本电脑 */}
+        <motion.group
+          scale={[0, 0, 0]}
+          animate={{
+            scale: section === 0 ? 1 : 0
+          }}
+          name="Laptop_Cube010" position={[-0.171, 0.067, 0.142]}>
           <mesh name="Laptop_Cube010-Mesh" geometry={nodes['Laptop_Cube010-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Laptop_Cube010-Mesh_1" geometry={nodes['Laptop_Cube010-Mesh_1'].geometry} material={textureMaterial} />
           <mesh name="Laptop_Cube010-Mesh_2" geometry={nodes['Laptop_Cube010-Mesh_2'].geometry} material={textureMaterial} />
-        </group>
+        </motion.group>
       </group>
-      <mesh name="rubber_duck_toy001" geometry={nodes.rubber_duck_toy001.geometry} material={textureMaterial} position={[-0.935, -0.005, -1.005]} rotation={[-Math.PI, 0.708, -Math.PI]} />
-      <mesh name="Plane-Mesh" geometry={nodes['Plane-Mesh'].geometry} material={textureMaterial} />
-      <mesh name="Plane-Mesh_1" geometry={nodes['Plane-Mesh_1'].geometry} material={textureMaterial} />
+      {/* 鸭子 */}
+      <motion.mesh
+        scale={[0, 0, 0]}
+        animate={{
+          scale: section === 0 ? 1 : 0
+        }}
+        name="rubber_duck_toy001" geometry={nodes.rubber_duck_toy001.geometry} material={textureMaterial} position={[-0.935, -0.005, -1.005]} rotation={[-Math.PI, 0.708, -Math.PI]}
+      />
+      {/* 墙壁和地板 */}
+      <motion.group
+        scale={[0, 0, 0]}
+        animate={{
+          scale: section === 0 ? 1 : 0
+        }}
+      >
+        <mesh name="Plane-Mesh" geometry={nodes['Plane-Mesh'].geometry} material={textureMaterial} />
+        <mesh name="Plane-Mesh_1" geometry={nodes['Plane-Mesh_1'].geometry} material={textureMaterial} />
+      </motion.group>
     </group>
   )
 }
