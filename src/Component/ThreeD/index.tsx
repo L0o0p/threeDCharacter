@@ -8,6 +8,7 @@ import { Float, MeshDistortMaterial } from "@react-three/drei"
 import { animate, useMotionValue } from "framer-motion"
 import { useEffect } from "react"
 import { framerMotionConfig } from "../framerMotionConfig"
+import { Projects } from "./Projects"
 
 interface Props {
     section: number
@@ -114,6 +115,8 @@ export const ThreeD = (props: Props) => {
                     <XBot animation={section === 0 ? 'FallAnimation' : 'Praying'} />
                 </motion.group>
             </motion.group>
+            <Projects />
+
             <Leva hidden />
         </>
 

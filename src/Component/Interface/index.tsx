@@ -23,8 +23,8 @@ export const Interface = () => {
             >
                 <HomeSection />
                 <SkillsSection />
-                <ContactMeSection />
                 <ProjectSection />
+                <ContactMeSection />
             </div>
 
         </div>
@@ -277,9 +277,10 @@ const ContactMeSection = () => {
 }
 
 const ProjectSection = () => {
-    return (<Section>
-        <h2 className='text-5xl font-bold font-Nunito '>My Project</h2>
-    </Section>)
+    return (
+        <Section>
+            <h2 className='text-5xl font-bold font-Nunito '>My Project</h2>
+        </Section>)
 }
 
 
