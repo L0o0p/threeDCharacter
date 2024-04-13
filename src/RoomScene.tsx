@@ -8,21 +8,23 @@ Command: npx gltfjsx@6.2.16 baked.gltf
 import { useGLTF, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import { Mesh } from 'three';
-import { GLTF } from 'three';
-import { GroupProps } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+// import { GroupProps } from '@react-three/fiber';
+import { useRef } from 'react';
 import { motion } from 'framer-motion-3d';
 
 
 // 定义GLTFResult接口，根据你的GLTF结构进行调整
-interface GLTFResult extends GLTF {
+interface GLTFResult {
   nodes: {
     [name: string]: Mesh;
   };
-  section: boolean;
 }
 
-export default function RoomScene(props: GroupProps) {
+interface RoomSceneProps {
+  section: number
+}
+
+export default function RoomScene(props: RoomSceneProps) {
   // load贴图文件
   const texture = useTexture('/scenes/roomScene.png')
   // blender导出的时候默认flipY，可能导致mapping不正确，这里给他反回来
@@ -35,7 +37,7 @@ export default function RoomScene(props: GroupProps) {
   // load模型文件
   const {
     nodes,
-    materials
+    // materials
   } = useGLTF('/scenes/roomScene.gltf') as unknown as GLTFResult;
   const { section } = props
 
@@ -45,6 +47,8 @@ export default function RoomScene(props: GroupProps) {
 
   return (
     <group {...props} ref={root} dispose={null} scale={1.15} rotation={[0, Math.PI / 2, 0]}>
+
+      {/* 🌲 */}
       <motion.group
         scale={[0, 0, 0]}
         animate={{
@@ -55,7 +59,18 @@ export default function RoomScene(props: GroupProps) {
         <mesh name="Icosphere003" geometry={nodes.Icosphere003.geometry} material={textureMaterial} position={[0.044, 0.696, -0.077]} rotation={[-Math.PI / 2, 0, 0]} />
       </motion.group>
       <group name="Empty" position={[-0.977, 0.536, -0.151]}>
-        <mesh name="Cube001" geometry={nodes.Cube001.geometry} material={textureMaterial} position={[1.72, -0.536, -0.067]} />
+        {/* 地毯 */}
+        <motion.mesh
+          scale={[0, 0, 0]}
+          animate={{
+            scale: section === 0 ? 1 : 0
+          }}
+          name="Cube001"
+          geometry={nodes.Cube001.geometry}
+          material={textureMaterial}
+          position={[1.72, -0.536, -0.067]}
+        />
+        {/* 桌子 */}
         <motion.group
           scale={[0, 0, 0]}
           animate={{
@@ -66,6 +81,8 @@ export default function RoomScene(props: GroupProps) {
           <mesh name="Cube004-Mesh_1" geometry={nodes['Cube004-Mesh_1'].geometry} material={textureMaterial} />
           <mesh name="Cube004-Mesh_2" geometry={nodes['Cube004-Mesh_2'].geometry} material={textureMaterial} />
         </motion.group>
+
+        {/* 椅子 */}
         <motion.group
           scale={[0, 0, 0]}
           animate={{
@@ -75,7 +92,8 @@ export default function RoomScene(props: GroupProps) {
           <mesh name="Cube006-Mesh" geometry={nodes['Cube006-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Cube006-Mesh_1" geometry={nodes['Cube006-Mesh_1'].geometry} material={textureMaterial} />
         </motion.group>
-        
+
+        {/* 笔 */}
         <motion.group
           scale={[0, 0, 0]}
           animate={{

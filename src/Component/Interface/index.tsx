@@ -1,4 +1,7 @@
+import { useScroll } from "@react-three/drei"
+import { useFrame } from "@react-three/fiber"
 import { motion } from "framer-motion"
+import { useRef } from "react"
 
 const Section = (props: any) => {
     const { children } = props
@@ -14,11 +17,15 @@ const Section = (props: any) => {
 
 export const Interface = () => {
     return (
-        <div className={"flex flex-col items-center w-screen"}>
-            <HomeSection />
-            <SkillsSection />
-            <ContactMeSection />
-            <ProjectSection />
+        <div
+            className={"flex flex-col items-center w-screen"}>
+            <div
+            >
+                <HomeSection />
+                <SkillsSection />
+                <ContactMeSection />
+                <ProjectSection />
+            </div>
 
         </div>
     )

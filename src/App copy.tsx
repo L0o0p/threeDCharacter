@@ -5,12 +5,10 @@ import { Canvas } from '@react-three/fiber'
 import { Scroll, ScrollControls } from '@react-three/drei'
 import { Interface } from './Component/Interface'
 import { ThreeD } from './Component/ThreeD'
-import { ScrollManager } from './Component/ScrollManager'
+// import { ScrollManager } from './Component/ScrollManager'
 import { useState } from 'react'
 import { Menu } from './Component/Menu'
 import { MotionConfig } from 'framer-motion'
-import { framerMotionConfig } from './Component/framerMotionConfig'
-import { Cursor } from './Component/Cursor.tsx'
 
 function App() {
   const [section, setSection] = useState(0);
@@ -20,9 +18,12 @@ function App() {
     <>
       <MotionConfig
         transition={{
-          ...framerMotionConfig
-        }}
-      >
+          type: 'spring',
+          mass: 5,
+          stiffness: 500, // 这是一个数字越大，运动越慢
+          damping: 50,
+          restDelta: 0.0001,
+        }}>
         <Canvas
           shadows
           camera={{
@@ -31,14 +32,15 @@ function App() {
           }}
         >
           {/* 背景色 */}
-          <color attach={'background'} args={['#fad0c4']} />
+          <color attach={'background'} args={['#ececec']} />
           <ScrollControls pages={4} damping={0.15}>
-            <ScrollManager section={section} onSectionChange={setSection} />
+            {/* <ScrollManager section={section} onSectionChange={setSection} > */}
             <Scroll html>
               <Interface />
             </Scroll>
+            {/* </ScrollManager> */}
             <Scroll>
-              <ThreeD section={section} menuOpened={menuOpened} />
+              <ThreeD section={section} />
             </Scroll>
           </ScrollControls>
         </Canvas >
@@ -47,7 +49,6 @@ function App() {
           menuOpened={menuOpened}
           setMenuOpened={setMenuOpened}
         />
-        <Cursor />
       </MotionConfig>
     </>
   )
