@@ -1,7 +1,9 @@
 import { useScroll } from "@react-three/drei"
 import { useFrame } from "@react-three/fiber"
 import { motion } from "framer-motion"
-import { useRef } from "react"
+import { useAtom } from "jotai"
+import { useRef, useState } from "react"
+import { currentProjectAtom, projects } from "../ThreeD/Projects"
 
 const Section = (props: any) => {
     const { children } = props
@@ -277,10 +279,32 @@ const ContactMeSection = () => {
 }
 
 const ProjectSection = () => {
+    const [currentProject, setCurrentProject] = useAtom(currentProjectAtom)
+
+    const nextProject = () => {
+        setCurrentProject((currentProject + 1) % projects.length)
+    }
+    const previousProject = () => {
+        setCurrentProject((currentProject - 1 + projects.length) % projects.length)
+    }
     return (
         <Section>
-            <h2 className='text-5xl font-bold font-Nunito '>My Project</h2>
-        </Section>)
+            <div className="flex w-full h-full gap-8 items-center justify-center ">
+                <button
+                    className="hover:text-indigo-600 transition-colors font-Nunito "
+                    onClick={previousProject}
+                >
+                    Previous
+                </button>
+                <h2 className="text-5xl font-bold font-Nunito ">Projects</h2>
+                <button
+                    className="hover:text-indigo-600 transition-colors font-Nunito "
+                    onClick={nextProject}
+                >
+                    Next
+                </button>
+            </div>
+        </Section >)
 }
 
 

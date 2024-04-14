@@ -47,7 +47,7 @@ function App() {
           menuOpened={menuOpened}
           setMenuOpened={setMenuOpened}
         />
-        <Cursor />
+        {/* <Cursor /> */}
       </MotionConfig>
     </>
   )
