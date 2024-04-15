@@ -4,9 +4,9 @@ import XBot from "../../XBot"
 import { Leva } from 'leva'
 import { motion } from 'framer-motion-3d'
 import { useFrame, useThree } from "@react-three/fiber"
-import { Float, MeshDistortMaterial } from "@react-three/drei"
+import { Float, MeshDistortMaterial, useScroll } from "@react-three/drei"
 import { animate, useMotionValue } from "framer-motion"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { framerMotionConfig } from "../framerMotionConfig"
 import { Projects } from "./Projects"
 
@@ -24,8 +24,10 @@ export const ThreeD = (props: Props) => {
     //     }
     // })
     const { section } = props
+    const [sectionB, setSectionB] = useState(0)
     const { menuOpened } = props
     const { viewport } = useThree()
+    const data = useScroll()
     const cameraPositionX = useMotionValue(null);
     const cameraLookAtX = useMotionValue(null);
 
@@ -40,6 +42,11 @@ export const ThreeD = (props: Props) => {
     }, [menuOpened])
 
     useFrame((state) => {
+        const curSectionB = Math.floor(data.scroll.current * data.pages)// 这里是将data.scroll的值乘以data.pages的值，得到当前的section
+        // 如果当前的sectionB和上一次的sectionB不一样，就设置sectionB
+        if (curSectionB !== sectionB) {
+            setSectionB(curSectionB)
+        }
         state.camera.position.x = cameraPositionX.get();
         state.camera.lookAt(cameraLookAtX.get(), 0, 0)
     })
@@ -109,12 +116,39 @@ export const ThreeD = (props: Props) => {
                 {/* 活动的人 */}
                 <motion.group
                     rotation={[0, 0, 0]}
-                    position={[0 - 0.5, 0 - 2, -8]}
+                    // position={[0 - 0.5, 0, -8]}
                     scale={[1, 1, 1]}
+
+                    //设置XBot当不同section对应的属性变化
+                    animate={'' + sectionB}
+                    transition={{ duration: 0.6 }}
+                    variants={{
+                        '0': {
+                            scaleX: 1,
+                            scaleY: 1,
+                            scaleZ: 1
+                        },
+                        '1': {
+                            y: -0.2,
+                            x: 0,
+                            z: -6,
+                        },
+                        '2': {
+                            y: -viewport.height * 1.5,
+                            x: 0,
+                            z: -8,
+                        },
+                        '3': {
+                            y: -viewport.height * 2,
+                            x: 0,
+                            z: -6,
+                        }
+
+                    }}
                 >
-                    <XBot animation={section === 0 ? 'FallAnimation' : 'Praying'} />
+                    <XBot animation={section === 0 ? 'FallAnimation' : 'Praying'} menuOpened={menuOpened} />
                 </motion.group>
-            </motion.group>
+            </motion.group >
             <Projects />
 
             <Leva hidden />
