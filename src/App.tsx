@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { Menu } from './Component/Menu'
 import { MotionConfig } from 'framer-motion'
 import { framerMotionConfig } from './Component/framerMotionConfig'
-import { Cursor } from './Component/Cursor.tsx'
+// import { Cursor } from './Component/Cursor.tsx'
 
 function App() {
   const [section, setSection] = useState(0);
@@ -31,7 +31,7 @@ function App() {
           }}
         >
           {/* 背景色 */}
-          <color attach={'background'} args={['#fad0c4']} />
+          {/* <color attach={'background'} args={['#fad0c4']} /> */}
           <ScrollControls pages={4} damping={0.15}>
             <ScrollManager section={section} onSectionChange={setSection} />
             <Scroll html>

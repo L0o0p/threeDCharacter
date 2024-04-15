@@ -1,6 +1,21 @@
+interface MenuProps {
+    onSectionChange: (index: number) => void;
+    menuOpened: boolean;
+    setMenuOpened: (index: boolean) => void;
+}
 
-export const Menu = (props: any) => {
+interface MenuButtonProps {
+    label: string;
+    onClick: () => void;
+}
+
+export const Menu = (props: MenuProps) => {
     const { onSectionChange, menuOpened, setMenuOpened } = props;
+    const onLableClick = (i: number) => {
+        setMenuOpened(false);// 关闭菜单
+        onSectionChange(i);// 跳转
+        console.log('clicked0');//检查
+    }
     return (
         <>
             <button
@@ -25,10 +40,10 @@ export const Menu = (props: any) => {
                 ${menuOpened ? 'w-80' : 'w-0'}`}
             >
                 <div className="flex-1 flex items-start justify-center flex-col gap-6 p-8">
-                    <MenuButton label="Home" onClick={() => { onSectionChange(0); console.log('clicked0') }} />
-                    <MenuButton label="Skills" onClick={() => { onSectionChange(0); console.log('clicked1') }} />
-                    <MenuButton label="Contact me" onClick={() => { onSectionChange(0); console.log('clicked2') }} />
-                    <MenuButton label="Project" onClick={() => { onSectionChange(0); console.log('clicked3') }} />
+                    <MenuButton label="Home" onClick={() => onLableClick(0)} />
+                    <MenuButton label="Skills" onClick={() => onLableClick(1)} />
+                    <MenuButton label="Project" onClick={() => onLableClick(2)} />
+                    <MenuButton label="Contact me" onClick={() => onLableClick(3)} />
                 </div>
             </div >
 
@@ -36,7 +51,7 @@ export const Menu = (props: any) => {
     )
 }
 
-const MenuButton = (props: any) => {
+const MenuButton = (props: MenuButtonProps) => {
     const { label, onClick } = props
     return (
         <button

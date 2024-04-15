@@ -85,10 +85,11 @@ export default function RoomScene(props: RoomSceneProps) {
         {/* 椅子 */}
         <motion.group
           scale={[0, 0, 0]}
+          // position={[0 + 0.6, 0, 0]}
           animate={{
             scale: section === 0 ? 1 : 0
           }}
-          name="Cube006" position={[0.426 + 0.55, -0.323, 0.332 - 0.15]}>
+          name="Cube006" position={[0.426 + 0.55 - 0.3, -0.323, 0.332 - 0.15]}>
           <mesh name="Cube006-Mesh" geometry={nodes['Cube006-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Cube006-Mesh_1" geometry={nodes['Cube006-Mesh_1'].geometry} material={textureMaterial} />
         </motion.group>
@@ -113,11 +114,12 @@ export default function RoomScene(props: RoomSceneProps) {
           name="Cylinder001" geometry={nodes.Cylinder001.geometry} material={textureMaterial} position={[-0.158, 0.004, -0.23]} />
         {/* 笔记本电脑 */}
         <motion.group
-          scale={[0, 0, 0]}
           animate={{
-            scale: section === 0 ? 1 : 0
+            scale: section === 0 ? 1.2 : 0
           }}
-          name="Laptop_Cube010" position={[-0.171, 0.067, 0.142]}>
+          name="Laptop_Cube010"
+          position={[-0.171 + 0.2, 0.067, 0.142]}
+        >
           <mesh name="Laptop_Cube010-Mesh" geometry={nodes['Laptop_Cube010-Mesh'].geometry} material={textureMaterial} />
           <mesh name="Laptop_Cube010-Mesh_1" geometry={nodes['Laptop_Cube010-Mesh_1'].geometry} material={textureMaterial} />
           <mesh name="Laptop_Cube010-Mesh_2" geometry={nodes['Laptop_Cube010-Mesh_2'].geometry} material={textureMaterial} />

@@ -9,6 +9,7 @@ import { animate, useMotionValue } from "framer-motion"
 import { useEffect, useState } from "react"
 import { framerMotionConfig } from "../framerMotionConfig"
 import { Projects } from "./Projects"
+import { Background } from "../Background"
 
 interface Props {
     section: number
@@ -27,9 +28,18 @@ export const ThreeD = (props: Props) => {
     const [sectionB, setSectionB] = useState(0)
     const { menuOpened } = props
     const { viewport } = useThree()
+    // const characterContainerAboutRef = useRef<any>(null)
+    const [characterAnimation, setCharacterAnimation] = useState('Typing')
     const data = useScroll()
     const cameraPositionX = useMotionValue(null);
     const cameraLookAtX = useMotionValue(null);
+    useEffect(
+        () => {
+            setCharacterAnimation('FallAnimation')
+            setTimeout(() => {
+                setCharacterAnimation(section === 0 ? 'Typing' : 'Praying')
+            }, 800)
+        }, [section])
 
     useEffect(() => {
         animate(cameraPositionX, menuOpened ? -5 : 0), { //[0 + 20, 0 - 0.5, -4]
@@ -42,7 +52,12 @@ export const ThreeD = (props: Props) => {
     }, [menuOpened])
 
     useFrame((state) => {
-        const curSectionB = Math.floor(data.scroll.current * data.pages)// 这里是将data.scroll的值乘以data.pages的值，得到当前的section
+        let curSectionB = Math.floor(data.scroll.current * data.pages)// 这里是将data.scroll的值乘以data.pages的值，得到当前的section
+
+        if (curSectionB > 3) {
+            curSectionB = 3
+        }
+
         // 如果当前的sectionB和上一次的sectionB不一样，就设置sectionB
         if (curSectionB !== sectionB) {
             setSectionB(curSectionB)
@@ -53,7 +68,7 @@ export const ThreeD = (props: Props) => {
 
     return (
         <>
-
+            <Background />
             <ambientLight intensity={3} />
             {/* <OrbitControls /> */}
             {/* <ContactShadows
@@ -69,7 +84,7 @@ export const ThreeD = (props: Props) => {
             <motion.group
                 rotation={[0, (Math.PI / 2) + (Math.PI / 6), 0]}
                 position={[0.5, 0 - 0.5, 0]}
-                scale={[0.9, 0.9, 0.9]}
+                scale={[1.1, 1.1, 1.1]}
             >
                 <RoomScene section={section} />
             </motion.group>
@@ -115,9 +130,9 @@ export const ThreeD = (props: Props) => {
                 </Float >
                 {/* 活动的人 */}
                 <motion.group
-                    rotation={[0, 0, 0]}
-                    // position={[0 - 0.5, 0, -8]}
-                    scale={[1, 1, 1]}
+                    position={[0 + 0.9, 0 + 1.01, 0 + 7.7]}
+                    // rotation={ [0, Math.PI / 2 + Math.PI / 7, 0]},
+                    // scale={[0.6, 0.6, 0.6]}
 
                     //设置XBot当不同section对应的属性变化
                     animate={'' + sectionB}
@@ -126,17 +141,23 @@ export const ThreeD = (props: Props) => {
                         '0': {
                             scaleX: 1,
                             scaleY: 1,
-                            scaleZ: 1
+                            scaleZ: 1,
+                            rotateX: 0,
+                            rotateY: Math.PI / 2 + Math.PI / 7,
+                            rotateZ: 0,
                         },
                         '1': {
-                            y: -0.2,
+                            y: 0.1,
                             x: 0,
                             z: -6,
+                            rotateY: Math.PI / 2 + Math.PI / 7 + Math.PI,
+
                         },
                         '2': {
-                            y: -viewport.height * 1.5,
+                            y: -viewport.height * 1.4,
                             x: 0,
                             z: -8,
+                            rotateY: Math.PI / 2 + Math.PI / 7,
                         },
                         '3': {
                             y: -viewport.height * 2,
@@ -146,7 +167,7 @@ export const ThreeD = (props: Props) => {
 
                     }}
                 >
-                    <XBot animation={section === 0 ? 'FallAnimation' : 'Praying'} menuOpened={menuOpened} />
+                    <XBot animation={characterAnimation} menuOpened={menuOpened} />
                 </motion.group>
             </motion.group >
             <Projects />
